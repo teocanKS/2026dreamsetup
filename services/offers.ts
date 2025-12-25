@@ -4,9 +4,17 @@ export const offersService = {
     async fetchOffersForBuild(supabase: SupabaseClient, buildId: string) {
         try {
             const { data, error } = await supabase
-                .from('v_offer_price_range')
-                .select('*')
-                .eq('build_id', buildId)
+                .from('offers')
+                .select(`
+          *,
+          discount_ranges (
+            min_percent,
+            max_percent,
+            confidence,
+            source
+          )
+        `)
+                .eq('part_item_id', buildId)
                 .order('created_at', { ascending: false })
 
             return { data, error }

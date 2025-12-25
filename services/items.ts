@@ -10,13 +10,21 @@ export const itemsService = {
           products (
             category,
             brand,
-            model
+            model,
+            base_price
           )
         `)
                 .eq('build_id', buildId)
                 .order('created_at', { ascending: false })
 
-            return { data, error }
+            if (error) return { data: null, error }
+
+            const enrichedData = data?.map(item => ({
+                ...item,
+                target_price: item.target_price || item.products?.base_price || 0
+            }))
+
+            return { data: enrichedData, error: null }
         } catch (error) {
             return { data: null, error }
         }

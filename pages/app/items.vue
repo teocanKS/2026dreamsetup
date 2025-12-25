@@ -49,7 +49,7 @@
                   <StatusBadge :status="item.status" />
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  ${{ item.target_price?.toFixed(2) || '0.00' }}
+                  ₺{{ item.target_price?.toFixed(2) || '0' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span

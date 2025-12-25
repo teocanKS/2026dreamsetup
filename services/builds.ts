@@ -13,11 +13,11 @@ export const buildsService = {
         }
     },
 
-    async createBuild(supabase: SupabaseClient, name: string, budget: number, userId: string) {
+    async createBuild(supabase: SupabaseClient, name: string, budget: number) {
         try {
             const { data, error } = await supabase
                 .from('builds')
-                .insert({ name, budget, user_id: userId })
+                .insert({ name, budget })
                 .select()
                 .single()
 

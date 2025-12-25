@@ -5,24 +5,13 @@
       <p class="text-gray-600 mt-1">Overview of your PC builds</p>
     </div>
 
-    <div v-if="!authStore.hasSession && authStore.initialized" class="bg-white rounded-xl shadow-sm p-12 text-center">
+    <div v-if="error" class="bg-white rounded-xl shadow-sm p-12 text-center">
       <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
         <AlertCircle class="w-8 h-8 text-gray-400" />
       </div>
-      <h3 class="text-xl font-semibold text-gray-900 mb-2">Session Required</h3>
-      <p class="text-gray-600 max-w-md mx-auto mb-2">
-        This app has no login UI. Create a Supabase session once (magic link sign-in) and refresh.
-      </p>
-      <p class="text-sm text-gray-500">See /auth for details</p>
-    </div>
-
-    <div v-else-if="error" class="bg-white rounded-xl shadow-sm p-12 text-center">
-      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-        <AlertCircle class="w-8 h-8 text-gray-400" />
-      </div>
-      <h3 class="text-xl font-semibold text-gray-900 mb-2">Access Not Configured</h3>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Database Error</h3>
       <p class="text-gray-600 max-w-md mx-auto">
-        Database access is not authorized. Configure Row Level Security policies to access build data.
+        Unable to load build data. Check Supabase configuration and table permissions.
       </p>
     </div>
 
@@ -53,7 +42,7 @@
         <div class="flex items-start justify-between mb-4">
           <div>
             <h3 class="text-lg font-bold text-gray-900">{{ build.name }}</h3>
-            <p class="text-sm text-gray-500 mt-1">Budget: ${{ build.budget?.toFixed(2) || '0.00' }}</p>
+            <p class="text-sm text-gray-500 mt-1">Budget: ₺{{ build.budget?.toFixed(2) || '0' }}</p>
           </div>
           <div
             :class="[
@@ -74,11 +63,11 @@
           <div>
             <div class="flex justify-between text-sm mb-1">
               <span class="text-gray-600">Spent</span>
-              <span class="font-medium text-gray-900">${{ build.spent?.toFixed(2) || '0.00' }}</span>
+              <span class="font-medium text-gray-900">₺{{ build.spent?.toFixed(2) || '0' }}</span>
             </div>
             <div class="flex justify-between text-sm mb-2">
               <span class="text-gray-600">Remaining</span>
-              <span class="font-medium text-gray-900">${{ build.remaining?.toFixed(2) || '0.00' }}</span>
+              <span class="font-medium text-gray-900">₺{{ build.remaining?.toFixed(2) || '0' }}</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
               <div
@@ -89,7 +78,7 @@
                 :style="{ width: `${Math.min(build.spent_pct || 0, 100)}%` }"
               ></div>
             </div>
-            <p class="text-xs text-gray-500 mt-1">{{ build.spent_pct?.toFixed(1) || '0.0' }}% spent</p>
+            <p class="text-xs text-gray-500 mt-1">{{ build.spent_pct?.toFixed(1) || '0' }}% spent</p>
           </div>
 
           <div class="pt-3 border-t border-gray-200">
@@ -109,7 +98,6 @@ import { Package, Plus, TrendingUp, AlertCircle } from 'lucide-vue-next'
 import { buildsService } from '~/services/builds'
 
 const { $supabase } = useNuxtApp()
-const authStore = useAuthStore()
 const buildStore = useBuildStore()
 const builds = ref<any[]>([])
 const loading = ref(true)
@@ -122,11 +110,6 @@ definePageMeta({
 })
 
 const loadBuilds = async () => {
-  if (!authStore.hasSession) {
-    loading.value = false
-    return
-  }
-
   loading.value = true
   error.value = false
   try {
@@ -148,12 +131,10 @@ const loadBuilds = async () => {
 const createDefaultBuild = async () => {
   creating.value = true
   try {
-    const userId = authStore.user?.id || ''
     const { data } = await buildsService.createBuild(
       $supabase,
       '2026 Setup',
-      0,
-      userId
+      0
     )
 
     if (data) {
@@ -165,8 +146,7 @@ const createDefaultBuild = async () => {
   creating.value = false
 }
 
-onMounted(async () => {
-  await authStore.initialize()
-  await loadBuilds()
+onMounted(() => {
+  loadBuilds()
 })
 </script>

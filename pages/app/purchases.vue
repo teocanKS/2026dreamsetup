@@ -14,7 +14,7 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-600">Total Spent</p>
-            <p class="text-3xl font-bold text-gray-900">${{ totals.total.toFixed(2) }}</p>
+            <p class="text-3xl font-bold text-gray-900">₺{{ totals.total.toFixed(2) }}</p>
           </div>
           <div>
             <p class="text-sm text-gray-600">Total Items</p>
@@ -57,7 +57,7 @@
                   {{ purchase.part_items?.products?.model }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  ${{ purchase.purchase_price?.toFixed(2) || '0.00' }}
+                  ₺{{ purchase.purchase_price?.toFixed(2) || '0' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {{ new Date(purchase.purchased_at).toLocaleDateString() }}

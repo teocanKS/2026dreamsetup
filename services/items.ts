@@ -10,22 +10,28 @@ export const itemsService = {
           products (
             category,
             brand,
-            model,
-            base_price
+            model
           )
         `)
                 .eq('build_id', buildId)
                 .order('created_at', { ascending: false })
 
-            if (error) return { data: null, error }
+            if (error) {
+                console.error('Supabase fetch error:', error)
+                return { data: null, error }
+            }
 
-            const enrichedData = data?.map(item => ({
-                ...item,
-                target_price: item.target_price || item.products?.base_price || 0
-            }))
+            const enrichedData = data?.map(item => {
+                const displayPrice = item.target_price || item.estimated_price || 0
+                return {
+                    ...item,
+                    target_price: displayPrice
+                }
+            })
 
             return { data: enrichedData, error: null }
         } catch (error) {
+            console.error('Items service exception:', error)
             return { data: null, error }
         }
     },

@@ -59,16 +59,6 @@
                   {{ formatCurrency(item.target_price || 0) }}
                 </p>
               </div>
-              <span
-                :class="[
-                  'px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider shadow-lg',
-                  item.priority === 'high' ? 'bg-gradient-to-r from-red-500 to-red-600 text-white' :
-                  item.priority === 'medium' ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-white' :
-                  'bg-slate-200 text-slate-700'
-                ]"
-              >
-                {{ item.priority }}
-              </span>
             </div>
 
             <select
@@ -98,6 +88,9 @@ const buildStore = useBuildStore()
 const items = ref<any[]>([])
 const loading = ref(true)
 
+// Category order for sorting
+const categoryOrder = ['gpu', 'cpu', 'motherboard', 'ram', 'ssd', 'cooling', 'psu', 'case', 'monitor', 'keyboard', 'switch', 'firewall']
+
 definePageMeta({
   layout: 'app',
   middleware: 'auth'
@@ -116,7 +109,19 @@ const loadItems = async () => {
     console.error('Items error:', error)
   }
   if (data) {
-    items.value = data
+    // Sort by category order
+    items.value = data.sort((a, b) => {
+      const categoryA = a.products?.category?.toLowerCase() || ''
+      const categoryB = b.products?.category?.toLowerCase() || ''
+      const indexA = categoryOrder.indexOf(categoryA)
+      const indexB = categoryOrder.indexOf(categoryB)
+      
+      // If category not found in order array, put it at the end
+      const orderA = indexA === -1 ? categoryOrder.length : indexA
+      const orderB = indexB === -1 ? categoryOrder.length : indexB
+      
+      return orderA - orderB
+    })
   }
   loading.value = false
 }

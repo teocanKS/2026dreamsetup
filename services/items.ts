@@ -14,7 +14,6 @@ export const itemsService = {
           )
         `)
                 .eq('build_id', buildId)
-                .order('priority', { ascending: false })
                 .order('created_at', { ascending: true })
 
             if (error) {

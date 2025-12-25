@@ -14,7 +14,8 @@ export const itemsService = {
           )
         `)
                 .eq('build_id', buildId)
-                .order('created_at', { ascending: false })
+                .order('priority', { ascending: false })
+                .order('created_at', { ascending: true })
 
             if (error) {
                 console.error('Supabase fetch error:', error)
@@ -36,7 +37,7 @@ export const itemsService = {
         }
     },
 
-    async updateItemStatus(supabase: SupabaseClient, itemId: string, status: string) {
+    async updateItemStatus(supabase: SupabaseClient, itemId: string, status: string, buildId: string) {
         try {
             const { data, error } = await supabase
                 .from('part_items')
@@ -45,8 +46,30 @@ export const itemsService = {
                 .select()
                 .single()
 
-            return { data, error }
+            if (error) return { data, error }
+
+            if (status !== 'bought') {
+                const { error: deleteError } = await supabase
+                    .from('purchases')
+                    .delete()
+                    .eq('part_item_id', itemId)
+
+                if (deleteError) {
+                    console.error('Purchase cleanup error:', deleteError)
+                }
+
+                const { error: updateError } = await supabase.rpc('recalculate_build_spent', {
+                    p_build_id: buildId
+                }).single()
+
+                if (updateError) {
+                    console.error('Recalculate error (RPC may not exist):', updateError)
+                }
+            }
+
+            return { data, error: null }
         } catch (error) {
+            console.error('Status update error:', error)
             return { data: null, error }
         }
     }

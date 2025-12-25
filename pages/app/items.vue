@@ -122,7 +122,7 @@ const loadItems = async () => {
 }
 
 const updateStatus = async (itemId: string, newStatus: string) => {
-  await itemsService.updateItemStatus($supabase, itemId, newStatus)
+  await itemsService.updateItemStatus($supabase, itemId, newStatus, buildStore.selectedBuildId!)
   await loadItems()
 }
 

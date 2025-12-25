@@ -1,31 +1,35 @@
 <template>
   <span
     :class="[
-      'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-      badgeClass
+      'inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide shadow-sm',
+      statusClass
     ]"
   >
-    {{ status }}
+    {{ statusText }}
   </span>
 </template>
 
 <script setup lang="ts">
+import { statusMap } from '~/utils/helpers'
+
 const props = defineProps<{
   status: string
 }>()
 
-const badgeClass = computed(() => {
+const statusText = computed(() => statusMap[props.status] || props.status)
+
+const statusClass = computed(() => {
   switch (props.status) {
-    case 'planned':
-      return 'bg-gray-100 text-gray-800'
     case 'active':
-      return 'bg-blue-100 text-blue-800'
+      return 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+    case 'planned':
+      return 'bg-blue-100 text-blue-800 border border-blue-200'
     case 'bought':
-      return 'bg-green-100 text-green-800'
+      return 'bg-green-600 text-white'
     case 'archived':
-      return 'bg-gray-100 text-gray-500'
+      return 'bg-slate-200 text-slate-700 border border-slate-300'
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-slate-100 text-slate-800'
   }
 })
 </script>

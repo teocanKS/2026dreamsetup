@@ -1,66 +1,68 @@
 <template>
-  <div class="animate-fade-in">
-    <div class="mb-6">
-      <h2 class="text-2xl font-bold text-slate-900">Alım Geçmişi</h2>
-      <p class="text-slate-600 mt-1">Satın alınan parçalarınızı takip edin</p>
+  <div class="animate-fade-in space-y-6">
+    <div>
+      <h1 class="text-3xl font-bold text-slate-900">Alım Geçmişi</h1>
+      <p class="text-slate-600 mt-1">Satın alınan tüm parçalar</p>
     </div>
 
-    <div v-if="!buildStore.selectedBuildId" class="bg-amber-50 border border-amber-200 rounded-xl p-5 animate-slide-up">
-      <p class="text-amber-900 font-medium">Önce bir kurulum seçin</p>
+    <div v-if="!buildStore.selectedBuildId" class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 animate-slide-up shadow-sm">
+      <p class="text-amber-900 font-semibold">⚠️ Önce bir kurulum seçin</p>
     </div>
 
     <div v-else>
-      <div class="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-sm p-8 border border-blue-100 animate-slide-up">
+      <div class="mb-6 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl shadow-2xl p-8 text-white animate-slide-up">
         <div class="grid grid-cols-2 gap-8">
           <div>
-            <p class="text-sm text-slate-600 font-medium mb-2">Toplam Harcama</p>
-            <p class="text-4xl font-bold text-slate-900">{{ formatCurrency(totals.total) }}</p>
+            <p class="text-blue-100 font-semibold mb-3 text-sm uppercase tracking-wide">Toplam Harcama</p>
+            <p class="text-5xl font-bold">{{ formatCurrency(totals.total) }}</p>
           </div>
           <div>
-            <p class="text-sm text-slate-600 font-medium mb-2">Toplam Parça</p>
-            <p class="text-4xl font-bold text-slate-900">{{ totals.count }}</p>
+            <p class="text-blue-100 font-semibold mb-3 text-sm uppercase tracking-wide">Alınan Parça</p>
+            <p class="text-5xl font-bold">{{ totals.count }}</p>
           </div>
         </div>
       </div>
 
-      <div v-if="loading" class="text-center py-20">
-        <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-blue-600 border-t-transparent"></div>
-        <p class="text-slate-600 mt-4">Yükleniyor...</p>
+      <div v-if="loading" class="text-center py-32">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
+        <p class="text-slate-600 font-medium">Yükleniyor...</p>
       </div>
 
-      <div v-else-if="purchases.length === 0" class="bg-white rounded-2xl shadow-sm p-16 text-center border border-slate-200 animate-slide-up">
-        <ShoppingCart class="w-16 h-16 text-slate-400 mx-auto mb-4" />
-        <h3 class="text-xl font-semibold text-slate-900 mb-2">Henüz Alım Yok</h3>
-        <p class="text-slate-600">Parçalar satın alındıkça burada görünecek</p>
+      <div v-else-if="purchases.length === 0" class="bg-white rounded-3xl p-20 text-center border border-slate-200 animate-slide-up shadow-lg">
+        <div class="w-24 h-24 bg-slate-100 rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-6">
+          <ShoppingCart class="w-12 h-12 text-slate-400" />
+        </div>
+        <h3 class="text-2xl font-bold text-slate-900 mb-3">Henüz Alım Yapılmamış</h3>
+        <p class="text-slate-600 max-w-md mx-auto">Parçalar satın alındıkça burada görünecek</p>
       </div>
 
-      <div v-else class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-200 animate-slide-up">
+      <div v-else class="bg-white rounded-3xl shadow-lg overflow-hidden border border-slate-200 animate-slide-up">
         <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-slate-50 border-b border-slate-200">
+            <thead class="bg-gradient-to-r from-slate-800 to-slate-900">
               <tr>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Kategori</th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Marka</th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Model</th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Fiyat</th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider">Tarih</th>
+                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Kategori</th>
+                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Marka</th>
+                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Model</th>
+                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Fiyat</th>
+                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Tarih</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200">
-              <tr v-for="purchase in purchases" :key="purchase.id" class="hover:bg-slate-50 transition-colors">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="text-sm font-semibold text-slate-900">{{ purchase.part_items?.products?.category }}</span>
+              <tr v-for="purchase in purchases" :key="purchase.id" class="hover:bg-slate-50 transition-colors duration-200">
+                <td class="px-6 py-5 whitespace-nowrap">
+                  <span class="text-sm font-bold text-blue-600 uppercase">{{ purchase.part_items?.products?.category }}</span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
+                <td class="px-6 py-5 whitespace-nowrap text-sm font-semibold text-slate-900">
                   {{ purchase.part_items?.products?.brand }}
                 </td>
-                <td class="px-6 py-4 text-sm text-slate-700">
+                <td class="px-6 py-5 text-sm text-slate-700">
                   {{ purchase.part_items?.products?.model }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-900">
+                <td class="px-6 py-5 whitespace-nowrap text-base font-bold text-slate-900">
                   {{ formatCurrency(purchase.purchase_price || 0) }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                <td class="px-6 py-5 whitespace-nowrap text-sm text-slate-600">
                   {{ formatDate(purchase.purchased_at) }}
                 </td>
               </tr>
@@ -75,6 +77,7 @@
 <script setup lang="ts">
 import { ShoppingCart } from 'lucide-vue-next'
 import { purchasesService } from '~/services/purchases'
+import { formatCurrency, formatDate } from '~/utils/helpers'
 
 const { $supabase } = useNuxtApp()
 const buildStore = useBuildStore()
@@ -86,18 +89,6 @@ definePageMeta({
   layout: 'app',
   middleware: 'auth'
 })
-
-const formatCurrency = (amount: number) => {
-  return `${amount.toLocaleString('tr-TR')} ₺`
-}
-
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('tr-TR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-}
 
 const loadPurchases = async () => {
   if (!buildStore.selectedBuildId) return
@@ -132,7 +123,7 @@ onMounted(() => {
 @keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -141,10 +132,10 @@ onMounted(() => {
 }
 
 .animate-fade-in {
-  animation: fade-in 0.5s ease-out;
+  animation: fade-in 0.6s ease-out;
 }
 
 .animate-slide-up {
-  animation: slide-up 0.6s ease-out;
+  animation: slide-up 0.7s ease-out;
 }
 </style>

@@ -3,5 +3,5 @@
 </template>
 
 <script setup lang="ts">
-navigateTo('/app')
+navigateTo('/app/items')
 </script>

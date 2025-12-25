@@ -1,12 +1,11 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex">
-    <AppSidebar />
-    
-    <div class="flex-1 flex flex-col overflow-hidden">
-      <main class="flex-1 overflow-auto p-8">
+  <div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
+    <TopNav />
+    <main class="pt-24 pb-12 px-6">
+      <div class="max-w-7xl mx-auto">
         <slot />
-      </main>
-    </div>
+      </div>
+    </main>
   </div>
 </template>
 

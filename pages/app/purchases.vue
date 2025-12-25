@@ -1,68 +1,65 @@
 <template>
-  <div class="animate-fade-in space-y-6">
-    <div>
-      <h1 class="text-3xl font-bold text-slate-900">Alım Geçmişi</h1>
-      <p class="text-slate-600 mt-1">Satın alınan tüm parçalar</p>
-    </div>
-
-    <div v-if="!buildStore.selectedBuildId" class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 animate-slide-up shadow-sm">
-      <p class="text-amber-900 font-semibold">⚠️ Önce bir kurulum seçin</p>
+  <div class="animate-fade-in space-y-8">
+    <div v-if="!buildStore.selectedBuildId" class="backdrop-blur-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-300/30 rounded-2xl p-6 shadow-xl">
+      <p class="text-amber-900 font-bold">⚠️ Önce bir kurulum seçin</p>
     </div>
 
     <div v-else>
-      <div class="mb-6 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl shadow-2xl p-8 text-white animate-slide-up">
-        <div class="grid grid-cols-2 gap-8">
+      <div class="mb-8 backdrop-blur-2xl bg-gradient-to-br from-blue-600/90 to-indigo-700/90 rounded-3xl shadow-2xl p-10 border border-white/20 animate-slide-up">
+        <div class="grid grid-cols-2 gap-10">
           <div>
-            <p class="text-blue-100 font-semibold mb-3 text-sm uppercase tracking-wide">Toplam Harcama</p>
-            <p class="text-5xl font-bold">{{ formatCurrency(totals.total) }}</p>
+            <p class="text-blue-100 font-black mb-4 text-sm uppercase tracking-widest">Toplam Harcama</p>
+            <p class="text-6xl font-black text-white drop-shadow-lg">{{ formatCurrency(totals.total) }}</p>
           </div>
           <div>
-            <p class="text-blue-100 font-semibold mb-3 text-sm uppercase tracking-wide">Alınan Parça</p>
-            <p class="text-5xl font-bold">{{ totals.count }}</p>
+            <p class="text-blue-100 font-black mb-4 text-sm uppercase tracking-widest">Alınan Parça</p>
+            <p class="text-6xl font-black text-white drop-shadow-lg">{{ totals.count }}</p>
           </div>
         </div>
       </div>
 
       <div v-if="loading" class="text-center py-32">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"></div>
-        <p class="text-slate-600 font-medium">Yükleniyor...</p>
+        <div class="inline-block animate-spin rounded-full h-14 w-14 border-4 border-blue-600 border-t-transparent mb-5"></div>
+        <p class="text-slate-700 font-semibold text-lg">Yükleniyor...</p>
       </div>
 
-      <div v-else-if="purchases.length === 0" class="bg-white rounded-3xl p-20 text-center border border-slate-200 animate-slide-up shadow-lg">
-        <div class="w-24 h-24 bg-slate-100 rounded-2xl shadow-sm flex items-center justify-center mx-auto mb-6">
-          <ShoppingCart class="w-12 h-12 text-slate-400" />
+      <div v-else-if="purchases.length === 0" class="backdrop-blur-2xl bg-white/40 rounded-3xl p-24 text-center border border-white/60 shadow-2xl animate-slide-up">
+        <div class="w-28 h-28 bg-gradient-to-br from-white/80 to-white/40 backdrop-blur-xl rounded-3xl shadow-2xl flex items-center justify-center mx-auto mb-8 border border-white/40">
+          <ShoppingCart class="w-14 h-14 text-slate-400" />
         </div>
-        <h3 class="text-2xl font-bold text-slate-900 mb-3">Henüz Alım Yapılmamış</h3>
-        <p class="text-slate-600 max-w-md mx-auto">Parçalar satın alındıkça burada görünecek</p>
+        <h3 class="text-3xl font-bold text-slate-900 mb-4">Henüz Alım Yapılmamış</h3>
+        <p class="text-slate-600 text-lg max-w-lg mx-auto">Parçalar satın alındıkça burada görünecek</p>
       </div>
 
-      <div v-else class="bg-white rounded-3xl shadow-lg overflow-hidden border border-slate-200 animate-slide-up">
+      <div v-else class="backdrop-blur-2xl bg-white/50 rounded-3xl shadow-2xl overflow-hidden border border-white/60 animate-slide-up">
         <div class="overflow-x-auto">
           <table class="w-full">
-            <thead class="bg-gradient-to-r from-slate-800 to-slate-900">
+            <thead class="bg-gradient-to-r from-slate-900 to-slate-800">
               <tr>
-                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Kategori</th>
-                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Marka</th>
-                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Model</th>
-                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Fiyat</th>
-                <th class="px-6 py-5 text-left text-xs font-bold text-white uppercase tracking-wider">Tarih</th>
+                <th class="px-8 py-6 text-left text-xs font-black text-white uppercase tracking-widest">Kategori</th>
+                <th class="px-8 py-6 text-left text-xs font-black text-white uppercase tracking-widest">Marka</th>
+                <th class="px-8 py-6 text-left text-xs font-black text-white uppercase tracking-widest">Model</th>
+                <th class="px-8 py-6 text-left text-xs font-black text-white uppercase tracking-widest">Fiyat</th>
+                <th class="px-8 py-6 text-left text-xs font-black text-white uppercase tracking-widest">Tarih</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-200">
-              <tr v-for="purchase in purchases" :key="purchase.id" class="hover:bg-slate-50 transition-colors duration-200">
-                <td class="px-6 py-5 whitespace-nowrap">
-                  <span class="text-sm font-bold text-blue-600 uppercase">{{ purchase.part_items?.products?.category }}</span>
+            <tbody class="divide-y divide-slate-200/50 backdrop-blur-xl bg-white/30">
+              <tr v-for="purchase in purchases" :key="purchase.id" class="hover:bg-white/60 transition-all duration-300">
+                <td class="px-8 py-6 whitespace-nowrap">
+                  <span class="text-sm font-black text-blue-600 uppercase bg-blue-50/80 px-3 py-1.5 rounded-lg">
+                    {{ purchase.part_items?.products?.category }}
+                  </span>
                 </td>
-                <td class="px-6 py-5 whitespace-nowrap text-sm font-semibold text-slate-900">
+                <td class="px-8 py-6 whitespace-nowrap text-sm font-bold text-slate-900">
                   {{ purchase.part_items?.products?.brand }}
                 </td>
-                <td class="px-6 py-5 text-sm text-slate-700">
+                <td class="px-8 py-6 text-sm text-slate-700 font-medium">
                   {{ purchase.part_items?.products?.model }}
                 </td>
-                <td class="px-6 py-5 whitespace-nowrap text-base font-bold text-slate-900">
+                <td class="px-8 py-6 whitespace-nowrap text-lg font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   {{ formatCurrency(purchase.purchase_price || 0) }}
                 </td>
-                <td class="px-6 py-5 whitespace-nowrap text-sm text-slate-600">
+                <td class="px-8 py-6 whitespace-nowrap text-sm text-slate-600 font-semibold">
                   {{ formatDate(purchase.purchased_at) }}
                 </td>
               </tr>
@@ -96,7 +93,7 @@ const loadPurchases = async () => {
   loading.value = true
   const { data, error } = await purchasesService.fetchPurchasesForBuild($supabase, buildStore.selectedBuildId)
   if (error) {
-    console.error('Purchases fetch error:', error)
+    console.error('Purchases error:', error)
   }
   if (data) {
     purchases.value = data
@@ -105,13 +102,9 @@ const loadPurchases = async () => {
   loading.value = false
 }
 
-watch(() => buildStore.selectedBuildId, () => {
-  loadPurchases()
-})
+watch(() => buildStore.selectedBuildId, loadPurchases)
 
-onMounted(() => {
-  loadPurchases()
-})
+onMounted(loadPurchases)
 </script>
 
 <style scoped>
@@ -123,7 +116,7 @@ onMounted(() => {
 @keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(40px);
   }
   to {
     opacity: 1;
@@ -132,10 +125,10 @@ onMounted(() => {
 }
 
 .animate-fade-in {
-  animation: fade-in 0.6s ease-out;
+  animation: fade-in 0.7s ease-out;
 }
 
 .animate-slide-up {
-  animation: slide-up 0.7s ease-out;
+  animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 </style>

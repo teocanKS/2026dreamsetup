@@ -41,6 +41,7 @@
                 <th class="px-8 py-6 text-left text-xs font-black text-white uppercase tracking-widest">Model</th>
                 <th class="px-8 py-6 text-left text-xs font-black text-white uppercase tracking-widest">Fiyat</th>
                 <th class="px-8 py-6 text-left text-xs font-black text-white uppercase tracking-widest">Tarih</th>
+                <th class="px-8 py-6 text-left text-xs font-black text-white uppercase tracking-widest">İşlem</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200/50 backdrop-blur-xl bg-white/30">
@@ -62,6 +63,15 @@
                 <td class="px-8 py-6 whitespace-nowrap text-sm text-slate-600 font-semibold">
                   {{ formatDate(purchase.purchased_at) }}
                 </td>
+                <td class="px-8 py-6 whitespace-nowrap">
+                  <button
+                    @click="handleDelete(purchase.id)"
+                    class="p-2 hover:bg-red-50 rounded-lg transition-colors group"
+                    title="Alımı Sil"
+                  >
+                    <Trash2 class="w-5 h-5 text-slate-400 group-hover:text-red-600 transition-colors" />
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -72,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { ShoppingCart } from 'lucide-vue-next'
+import { ShoppingCart, Trash2 } from 'lucide-vue-next'
 import { purchasesService } from '~/services/purchases'
 import { formatCurrency, formatDate } from '~/utils/helpers'
 
@@ -100,6 +110,20 @@ const loadPurchases = async () => {
     totals.value = await purchasesService.calculateTotals(data)
   }
   loading.value = false
+}
+
+const handleDelete = async (purchaseId: string) => {
+  if (!confirm('Bu alımı silmek istediğinizden emin misiniz? Parça durumu otomatik olarak "Aktif" konumuna dönecektir.')) {
+    return
+  }
+
+  const { success, error } = await purchasesService.deletePurchase($supabase, purchaseId)
+  if (success) {
+    await loadPurchases()
+  } else {
+    console.error('Failed to delete purchase:', error)
+    alert('Alım silinirken bir hata oluştu.')
+  }
 }
 
 watch(() => buildStore.selectedBuildId, loadPurchases)

@@ -5,7 +5,17 @@
       <p class="text-gray-600 mt-1">Overview of your PC builds</p>
     </div>
 
-    <div v-if="loading" class="text-center py-12">
+    <div v-if="error" class="bg-white rounded-xl shadow-sm p-12 text-center">
+      <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <AlertCircle class="w-8 h-8 text-gray-400" />
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-2">Access Not Configured</h3>
+      <p class="text-gray-600 max-w-md mx-auto">
+        Database access is not authorized. Configure Supabase credentials and Row Level Security policies to access build data.
+      </p>
+    </div>
+
+    <div v-else-if="loading" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-primary-600 border-t-transparent"></div>
     </div>
 
@@ -84,15 +94,15 @@
 </template>
 
 <script setup lang="ts">
-import { Package, Plus, TrendingUp } from 'lucide-vue-next'
+import { Package, Plus, TrendingUp, AlertCircle } from 'lucide-vue-next'
 import { buildsService } from '~/services/builds'
 
 const { $supabase } = useNuxtApp()
-const authStore = useAuthStore()
 const buildStore = useBuildStore()
 const builds = ref<any[]>([])
 const loading = ref(true)
 const creating = ref(false)
+const error = ref(false)
 
 definePageMeta({
   layout: 'app',
@@ -101,29 +111,40 @@ definePageMeta({
 
 const loadBuilds = async () => {
   loading.value = true
-  const { data } = await buildsService.fetchBuilds($supabase)
-  if (data) {
-    builds.value = data
-    if (data.length > 0 && !buildStore.selectedBuildId) {
-      buildStore.selectBuild(data[0].build_id)
+  error.value = false
+  try {
+    const { data, error: fetchError } = await buildsService.fetchBuilds($supabase)
+    if (fetchError) {
+      error.value = true
+    } else if (data) {
+      builds.value = data
+      if (data.length > 0 && !buildStore.selectedBuildId) {
+        buildStore.selectBuild(data[0].build_id)
+      }
     }
+  } catch (e) {
+    error.value = true
   }
   loading.value = false
 }
 
 const createDefaultBuild = async () => {
   creating.value = true
-  const { data } = await buildsService.createBuild(
-    $supabase,
-    '2026 Setup',
-    0,
-    authStore.user?.id || ''
-  )
-  creating.value = false
+  try {
+    const { data } = await buildsService.createBuild(
+      $supabase,
+      '2026 Setup',
+      0,
+      ''
+    )
 
-  if (data) {
-    await loadBuilds()
+    if (data) {
+      await loadBuilds()
+    }
+  } catch (e) {
+    error.value = true
   }
+  creating.value = false
 }
 
 onMounted(() => {

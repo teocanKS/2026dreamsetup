@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <h1>Welcome</h1>
-    <NuxtLink to="/login">Login</NuxtLink>
-  </div>
+  <div></div>
 </template>
+
+<script setup lang="ts">
+navigateTo('/app')
+</script>

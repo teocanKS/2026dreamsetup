@@ -4,15 +4,19 @@ import type { User } from '@supabase/supabase-js'
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null as User | null,
-        loading: false
+        loading: false,
+        initialized: false
     }),
 
     getters: {
-        isAuthenticated: (state) => !!state.user
+        isAuthenticated: (state) => !!state.user,
+        hasSession: (state) => state.initialized && !!state.user
     },
 
     actions: {
         async initialize() {
+            if (this.initialized) return
+
             const { $supabase } = useNuxtApp()
             try {
                 const { data } = await $supabase.auth.getSession()
@@ -24,6 +28,7 @@ export const useAuthStore = defineStore('auth', {
             } catch (error) {
                 this.user = null
             }
+            this.initialized = true
         }
     }
 })

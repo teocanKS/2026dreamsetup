@@ -2,13 +2,17 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 
 export const offersService = {
     async fetchOffersForBuild(supabase: SupabaseClient, buildId: string) {
-        const { data, error } = await supabase
-            .from('v_offer_price_range')
-            .select('*')
-            .eq('build_id', buildId)
-            .order('created_at', { ascending: false })
+        try {
+            const { data, error } = await supabase
+                .from('v_offer_price_range')
+                .select('*')
+                .eq('build_id', buildId)
+                .order('created_at', { ascending: false })
 
-        return { data, error }
+            return { data, error }
+        } catch (error) {
+            return { data: null, error }
+        }
     },
 
     async createOffer(
@@ -30,41 +34,49 @@ export const offersService = {
             source?: string
         }
     ) {
-        const { data: offerData, error: offerError } = await supabase
-            .from('offers')
-            .insert(offer)
-            .select()
-            .single()
+        try {
+            const { data: offerData, error: offerError } = await supabase
+                .from('offers')
+                .insert(offer)
+                .select()
+                .single()
 
-        if (offerError) return { data: null, error: offerError }
+            if (offerError) return { data: null, error: offerError }
 
-        if (discountRange && offerData) {
-            const { error: discountError } = await supabase
-                .from('discount_ranges')
-                .insert({
-                    offer_id: offerData.id,
-                    ...discountRange
-                })
+            if (discountRange && offerData) {
+                const { error: discountError } = await supabase
+                    .from('discount_ranges')
+                    .insert({
+                        offer_id: offerData.id,
+                        ...discountRange
+                    })
 
-            if (discountError) return { data: offerData, error: discountError }
+                if (discountError) return { data: offerData, error: discountError }
+            }
+
+            return { data: offerData, error: null }
+        } catch (error) {
+            return { data: null, error }
         }
-
-        return { data: offerData, error: null }
     },
 
     async setPrimaryOffer(supabase: SupabaseClient, offerId: string, partItemId: string) {
-        await supabase
-            .from('offers')
-            .update({ is_primary: false })
-            .eq('part_item_id', partItemId)
+        try {
+            await supabase
+                .from('offers')
+                .update({ is_primary: false })
+                .eq('part_item_id', partItemId)
 
-        const { data, error } = await supabase
-            .from('offers')
-            .update({ is_primary: true })
-            .eq('id', offerId)
-            .select()
-            .single()
+            const { data, error } = await supabase
+                .from('offers')
+                .update({ is_primary: true })
+                .eq('id', offerId)
+                .select()
+                .single()
 
-        return { data, error }
+            return { data, error }
+        } catch (error) {
+            return { data: null, error }
+        }
     }
 }

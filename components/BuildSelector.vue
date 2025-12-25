@@ -3,7 +3,7 @@
     <select
       v-model="selectedBuild"
       @change="handleBuildChange"
-      class="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-10 font-medium text-gray-700 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+      class="appearance-none bg-white/60 hover:bg-white/80 border border-slate-200/60 rounded-lg px-4 py-2 pr-10 text-sm font-medium text-slate-700 focus:outline-none focus:border-slate-400 transition-colors backdrop-blur-sm cursor-pointer shadow-sm"
     >
       <option v-for="build in builds" :key="build.build_id" :value="build.build_id">
         {{ build.name }}

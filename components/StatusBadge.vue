@@ -1,7 +1,7 @@
 <template>
   <span
     :class="[
-      'inline-flex items-center px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider shadow-lg backdrop-blur-xl border',
+      'inline-flex items-center px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider backdrop-blur-sm transition-colors',
       statusClass
     ]"
   >
@@ -21,15 +21,15 @@ const statusText = computed(() => statusMap[props.status] || props.status)
 const statusClass = computed(() => {
   switch (props.status) {
     case 'active':
-      return 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border-emerald-300'
+      return 'bg-emerald-50/80 text-emerald-700 ring-1 ring-emerald-600/10'
     case 'planned':
-      return 'bg-gradient-to-r from-blue-500 to-blue-600 text-white border-blue-300'
+      return 'bg-slate-100/80 text-slate-600 ring-1 ring-slate-400/10'
     case 'bought':
-      return 'bg-gradient-to-r from-green-600 to-green-700 text-white border-green-400'
+      return 'bg-blue-50/80 text-blue-700 ring-1 ring-blue-600/10'
     case 'archived':
-      return 'bg-slate-200/80 text-slate-700 border-slate-300'
+      return 'bg-gray-50/80 text-gray-500 ring-1 ring-gray-400/10'
     default:
-      return 'bg-slate-100/80 text-slate-800 border-slate-200'
+      return 'bg-slate-50/80 text-slate-600 ring-1 ring-slate-400/10'
   }
 })
 </script>

@@ -1,40 +1,43 @@
 <template>
-  <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/70 border-b border-white/20 shadow-lg">
-    <div class="max-w-7xl mx-auto px-6 py-4">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-6">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-              <Package class="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 class="font-bold text-slate-900 text-lg">2026 Setup</h1>
-              <p class="text-xs text-slate-600">Kurulum Takip Sistemi</p>
-            </div>
+  <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-[rgba(255,255,255,0.72)] border-b border-[rgba(0,0,0,0.04)] transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-8">
+        <!-- Logo Area -->
+        <div class="flex items-center gap-3 group cursor-default">
+          <div class="w-10 h-10 bg-white shadow-sm border border-slate-200/50 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+            <Package class="w-5 h-5 text-slate-700" />
           </div>
-
-          <div class="flex gap-2 ml-8">
-            <NuxtLink
-              to="/app/items"
-              class="px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105"
-              :class="route.path.includes('items') 
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30' 
-                : 'text-slate-700 hover:bg-white/60'"
-            >
-              Parçalar
-            </NuxtLink>
-            <NuxtLink
-              to="/app/purchases"
-              class="px-6 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 hover:scale-105"
-              :class="route.path.includes('purchases') 
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30' 
-                : 'text-slate-700 hover:bg-white/60'"
-            >
-              Alımlar
-            </NuxtLink>
+          <div>
+            <h1 class="font-semibold text-slate-900 text-base tracking-tight leading-tight">2026 Setup</h1>
+            <p class="text-[11px] font-medium text-slate-400 uppercase tracking-widest">Dashboard</p>
           </div>
         </div>
 
+        <!-- Navigation Links -->
+        <div class="hidden md:flex items-center gap-1 h-10 p-1 bg-slate-100/50 rounded-lg border border-slate-200/50 backdrop-blur-sm">
+          <NuxtLink
+            to="/app/items"
+            class="px-5 h-full flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200"
+            :class="route.path.includes('items') 
+              ? 'bg-white text-slate-900 shadow-sm shadow-slate-200/50' 
+              : 'text-slate-500 hover:text-slate-700'"
+          >
+            Parçalar
+          </NuxtLink>
+          <NuxtLink
+            to="/app/purchases"
+            class="px-5 h-full flex items-center justify-center rounded-md text-sm font-medium transition-all duration-200"
+            :class="route.path.includes('purchases') 
+              ? 'bg-white text-slate-900 shadow-sm shadow-slate-200/50' 
+              : 'text-slate-500 hover:text-slate-700'"
+          >
+            Alımlar
+          </NuxtLink>
+        </div>
+      </div>
+
+      <!-- Right Side Actions -->
+      <div class="flex items-center gap-4">
         <BuildSelector v-if="buildStore" />
       </div>
     </div>

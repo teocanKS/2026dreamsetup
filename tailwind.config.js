@@ -26,10 +26,19 @@ export default {
           800: '#1e293b',
           900: '#0f172a',
         },
+        // New Premium Accents
+        accent: {
+          primary: '#6366f1', // Indigo-500-ish but tuned (Deep Blue-Violet)
+          'primary-hover': '#4f46e5',
+          secondary: '#06b6d4', // Cyan-500 (Teal/Cyan)
+          'secondary-hover': '#0891b2',
+        }
       },
       boxShadow: {
         'glass': '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
         'glass-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
+        'glow': '0 0 15px rgba(99, 102, 241, 0.15)', // Subtle accent glow
+        'glow-sm': '0 0 8px rgba(99, 102, 241, 0.1)',
       }
     },
   },

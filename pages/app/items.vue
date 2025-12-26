@@ -30,13 +30,16 @@
         <div
           v-for="(item, index) in items"
           :key="item.id"
-          class="group relative bg-white/55 backdrop-blur-xl rounded-2xl border border-white/40 overflow-hidden hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-white/80 transition-all duration-500 hover:-translate-y-1"
+          class="group relative bg-white/60 backdrop-blur-xl rounded-2xl border border-white/50 overflow-hidden hover:shadow-glass-hover hover:border-white/90 transition-all duration-300 hover:-translate-y-1"
           :style="{ animationDelay: `${index * 50}ms` }"
         >
           <!-- Image Area -->
-          <div class="relative h-64 flex items-center justify-center bg-gradient-to-b from-white/20 to-transparent p-8 group-hover:bg-white/30 transition-colors duration-500">
+          <div class="relative h-64 flex items-center justify-center p-8 overflow-hidden">
+            <!-- Subtle gradient backdrop -->
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-50/50 to-transparent opacity-50 transition-opacity group-hover:opacity-100"></div>
+            
              <!-- Status Badge (Floating) -->
-            <div class="absolute top-4 right-4 z-10 opacity-90 group-hover:opacity-100 transition-opacity">
+            <div class="absolute top-4 right-4 z-10 transition-transform duration-300 group-hover:scale-105">
               <StatusBadge :status="item.status" />
             </div>
 
@@ -44,35 +47,35 @@
               v-if="getProductImage(item.products?.category, item.products?.model)"
               :src="getProductImage(item.products?.category, item.products?.model)"
               :alt="item.products?.model"
-              class="max-w-full max-h-full object-contain filter drop-shadow-sm transition-transform duration-700 ease-out group-hover:scale-105 group-hover:drop-shadow-md"
+              class="relative z-0 max-w-full max-h-full object-contain filter drop-shadow-sm transition-transform duration-500 ease-out group-hover:scale-105 group-hover:drop-shadow-lg"
               @error="handleImageError"
             />
             <div v-else class="flex flex-col items-center justify-center text-slate-300">
-               <Box class="w-16 h-16 opacity-50" />
+               <Box class="w-16 h-16 opacity-30" />
             </div>
           </div>
 
           <!-- Content Area -->
-          <div class="p-6 pt-2">
+          <div class="p-6 pt-2 flex flex-col h-[180px]">
             <!-- Header -->
-            <div class="mb-6">
-              <div class="flex items-center justify-between mb-2">
-                 <span class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+            <div class="mb-2">
+              <div class="flex items-center gap-2 mb-3">
+                 <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-widest uppercase border border-accent-secondary/20 text-accent-secondary bg-accent-secondary/5">
                   {{ item.products?.category }}
                  </span>
               </div>
               
-              <h3 class="text-base font-semibold text-slate-800 leading-tight mb-1 group-hover:text-slate-900 transition-colors">
+              <h3 class="text-base font-bold text-slate-900 leading-tight mb-1 group-hover:text-accent-primary transition-colors line-clamp-1">
                 {{ item.products?.brand }}
               </h3>
-              <p class="text-sm text-slate-500 leading-relaxed line-clamp-2 min-h-[2.5em]">{{ item.products?.model }}</p>
+              <p class="text-sm text-slate-500 font-medium leading-relaxed line-clamp-2 h-[2.8em]">{{ item.products?.model }}</p>
             </div>
 
             <!-- Footer: Price & Actions -->
-            <div class="flex items-end justify-between border-t border-slate-100/50 pt-5 mt-auto">
+            <div class="mt-auto pt-4 border-t border-slate-100/50 flex items-center justify-between">
               <div>
                 <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Hedef</p>
-                <p class="text-lg font-medium text-slate-900 lining-nums tabular-nums">
+                <p class="text-xl font-bold text-slate-800 tracking-tight lining-nums tabular-nums group-hover:text-accent-primary transition-colors">
                   {{ formatCurrency(item.target_price || 0) }}
                 </p>
               </div>
@@ -81,7 +84,7 @@
                  <select
                   :value="item.status"
                   @change="updateStatus(item.id, ($event.target as HTMLSelectElement).value)"
-                  class="w-full text-xs font-medium border border-slate-200/60 rounded-lg pl-3 pr-8 py-2 bg-white/40 focus:bg-white focus:ring-1 focus:ring-slate-200 focus:border-slate-300 transition-all text-slate-600 cursor-pointer hover:bg-white/60 appearance-none shadow-sm"
+                  class="w-full text-xs font-semibold border border-slate-200/60 rounded-lg pl-3 pr-8 py-2 bg-white/50 focus:bg-white focus:ring-1 focus:ring-accent-primary/20 focus:border-accent-primary/30 transition-all text-slate-600 cursor-pointer hover:bg-white/80 appearance-none shadow-sm"
                 >
                   <option value="planned">Planlanan</option>
                   <option value="active">Aktif</option>
@@ -89,7 +92,7 @@
                   <option value="archived">Arşivlendi</option>
                 </select>
                 <!-- Custom arrow indicator -->
-                 <div class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
+                 <div class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none opacity-40 text-slate-500">
                     <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
